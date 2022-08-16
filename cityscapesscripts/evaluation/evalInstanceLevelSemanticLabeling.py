@@ -37,6 +37,7 @@
 from __future__ import print_function, absolute_import, division
 import os, sys
 import fnmatch
+import argparse
 from copy import deepcopy
 
 # Cityscapes imports
@@ -677,9 +678,16 @@ def evaluateImgLists(predictionList, groundTruthList, args):
     return resDict
 
 # The main method
-def main():
+def main(cityscapesPath=None, exportFile=None, predictionPath=None, argv=[]):
     global args
-    argv = sys.argv[1:]
+    if cityscapesPath is not None:
+        args.cityscapesPath = cityscapesPath
+        args.exportFile         = os.path.join( args.cityscapesPath , "evaluationResults" , "resultInstanceLevelSemanticLabeling.json" )
+        args.groundTruthSearch  = os.path.join( args.cityscapesPath , "gtFine" , "val" , "*", "*_gtFine_instanceIds.png" )
+    if exportFile is not None:
+        args.exportFile = exportFile
+    if predictionPath is not None:
+        args.predictionPath = os.path.abspath(predictionPath)
 
     predictionImgList = []
     groundTruthImgList = []
@@ -712,4 +720,4 @@ def main():
 
 # call the main method
 if __name__ == "__main__":
-    main()
+    main(argv=sys.argv[1:])
